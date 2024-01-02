@@ -1,0 +1,3 @@
+[submodule "RISC-V-SoC"]
+	path = RISC-V-SoC
+	url = ../RISC-V-SoC
