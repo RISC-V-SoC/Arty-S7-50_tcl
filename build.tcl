@@ -75,6 +75,7 @@ read_vhdl -vhdl2008 [ glob RISC-V-SoC/riscv32_processor/utils/*.vhd ]
 read_vhdl -vhdl2008 [ glob RISC-V-SoC/triple_23lc1024_controller/*.vhd ]
 read_vhdl -vhdl2008 [ glob RISC-V-SoC/uart_bus_master/*.vhd ]
 read_vhdl -vhdl2008 [ glob RISC-V-SoC/uart_bus_slave/*.vhd ]
+read_vhdl -vhdl2008 [ glob RISC-V-SoC/static_soc_info/*.vhd ]
 read_xdc ./Arty-S7-50.xdc
 
 # Synthesis

@@ -24,7 +24,6 @@ architecture Behavioral of toplevel is
     signal clk_gen_locked : std_logic;
     signal global_reset : std_logic := '0';
     constant clk_frequency_hz : real := real(clk_freq_mhz) * real(1000_000);
-    constant clk_period : time := (1 sec) / (clk_frequency_hz);
 
     component main_clock_gen
 port
@@ -45,7 +44,7 @@ begin
 
     main_file : entity work.main_file
     generic map (
-        clk_period => clk_period,
+        clk_freq_hz => integer(clk_frequency_hz),
         baud_rate => 2000000
     ) port map (
         JA_gpio => ja(7 downto 4),
