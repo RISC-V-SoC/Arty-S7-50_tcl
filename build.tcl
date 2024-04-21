@@ -21,14 +21,18 @@ proc run_phys_opt {output_dir design_stage_name dont_repeat} {
     puts "phys_opt $design_stage_name final WNS: $WNS"
 }
 
-set outputDir ./build
+set outputDir [lindex $argv 0]
 set synthesisDir $outputDir/synthesis
 set optDesignDir $outputDir/optDesign
 set placeDesignDir $outputDir/placeDesign
 set routeDesignDir $outputDir/routeDesign
 set finalDesignDir $outputDir/finalDesign
 set home $env(HOME)
-file delete -force -- $outputDir
+file delete -force -- $synthesisDir
+file delete -force -- $optDesignDir
+file delete -force -- $placeDesignDir
+file delete -force -- $routeDesignDir
+file delete -force -- $finalDesignDir
 file mkdir $synthesisDir
 file mkdir $optDesignDir
 file mkdir $placeDesignDir
