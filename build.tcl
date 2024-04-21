@@ -76,12 +76,13 @@ read_vhdl -vhdl2008 [ glob RISC-V-SoC/triple_23lc1024_controller/*.vhd ]
 read_vhdl -vhdl2008 [ glob RISC-V-SoC/uart_bus_master/*.vhd ]
 read_vhdl -vhdl2008 [ glob RISC-V-SoC/uart_bus_slave/*.vhd ]
 read_vhdl -vhdl2008 [ glob RISC-V-SoC/static_soc_info/*.vhd ]
+read_vhdl -vhdl2008 [ glob RISC-V-SoC/gpio_controller/*.vhd ]
 read_xdc ./Arty-S7-50.xdc
 
 # Synthesis
 puts "Step 2/5: Synthesis of our modules"
 set SYNTH_ARGS ""
-append SYNTH_ARGS " " -flatten_hierarchy " " none " "
+append SYNTH_ARGS " " -flatten_hierarchy " " full " "
 append SYNTH_ARGS " " -gated_clock_conversion " " off " "
 append SYNTH_ARGS " " -bufg " {" 12 "} "
 append SYNTH_ARGS " " -directive " " AlternateRoutability " "
@@ -120,7 +121,7 @@ opt_design {*}$OPT_ARGS > $optDesignDir/log
 
 #Place design
 puts "Step 4/5: Place design"
-set_clock_uncertainty 0.600 [get_clocks CLKSYS_main_clock_gen]
+set_clock_uncertainty 0.700 [get_clocks CLKSYS_main_clock_gen]
 place_design -directive ExtraNetDelay_high > $placeDesignDir/log
 set WNS -1
 set iteration 0

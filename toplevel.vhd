@@ -11,6 +11,7 @@ entity toplevel is
         CLK12MHZ : in STD_LOGIC;
         ja : inout std_logic_vector(7 downto 0);
         jb : out std_logic_vector(7 downto 0);
+        ck_io : inout std_logic_vector(7 downto 0);
         slave_rx : in std_logic;
         slave_tx : out std_logic;
         uart_rxd_out : out std_logic;
@@ -49,6 +50,7 @@ begin
     ) port map (
         JA_gpio => ja(7 downto 4),
         JB_gpio => jb(7 downto 4),
+        general_gpio => ck_io,
         clk => CLKSYS,
         global_reset => '0',
         master_rx => uart_txd_in,
