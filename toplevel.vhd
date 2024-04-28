@@ -15,7 +15,11 @@ entity toplevel is
         slave_rx : in std_logic;
         slave_tx : out std_logic;
         uart_rxd_out : out std_logic;
-        uart_txd_in : in std_logic
+        uart_txd_in : in std_logic;
+        ck_io10_ss : inout std_logic;
+        ck_io11_mosi : out std_logic;
+        ck_io12_miso : in std_logic;
+        ck_io13_sck : out std_logic
     );
 end toplevel;
 
@@ -56,7 +60,11 @@ begin
         master_rx => uart_txd_in,
         master_tx => uart_rxd_out,
         slave_rx => slave_rx,
-        slave_tx => slave_tx
+        slave_tx => slave_tx,
+        spi_ss => ck_io10_ss,
+        spi_clk => ck_io13_sck,
+        spi_mosi => ck_io11_mosi,
+        spi_miso => ck_io12_miso
     );
 
 
