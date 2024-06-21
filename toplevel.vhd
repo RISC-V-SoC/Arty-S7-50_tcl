@@ -27,7 +27,6 @@ architecture Behavioral of toplevel is
 
     signal CLKSYS : std_logic;
     signal clk_gen_locked : std_logic;
-    signal global_reset : std_logic := '0';
     constant clk_frequency_hz : real := real(clk_freq_mhz) * real(1000_000);
 
     component main_clock_gen
@@ -56,7 +55,6 @@ begin
         JB_gpio => jb(7 downto 4),
         general_gpio => ck_io,
         clk => CLKSYS,
-        global_reset => '0',
         master_rx => uart_txd_in,
         master_tx => uart_rxd_out,
         slave_rx => slave_rx,
