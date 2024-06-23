@@ -41,7 +41,7 @@ file mkdir $finalDesignDir
 
 set_part xc7s50csga324-1
 set_property TARGET_LANGUAGE VHDL [current_project]
-set_property BOARD_PART_REPO_PATHS $home/.Xilinx/Vivado/2023.1/xhub/board_store/xilinx_board_store [current_project]
+set_property BOARD_PART_REPO_PATHS $home/.Xilinx/Vivado/2024.1/xhub/board_store/xilinx_board_store [current_project]
 set_property BOARD_PART digilentinc.com:arty-s7-50:part0:1.1 [current_project]
 set_property DEFAULT_LIB work [current_project]
 # generate the clock core
