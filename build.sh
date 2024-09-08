@@ -1,5 +1,5 @@
 #!/bin/bash
-BASEDIR="${HOME}/opt/Xilinx/Vivado/2024.1"
+BASEDIR="/opt/Xilinx/Vivado/2023.2"
 source ${BASEDIR}/settings64.sh
 
 BUILDDIR=${1:-"build"}
