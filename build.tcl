@@ -127,7 +127,7 @@ opt_design {*}$OPT_ARGS > $optDesignDir/log
 #Place design
 puts "Step 4/5: Place design"
 set_clock_uncertainty 0.700 [get_clocks CLKSYS_main_clock_gen]
-place_design -directive ExtraNetDelay_high > $placeDesignDir/log
+place_design -directive ExtraTimingOpt > $placeDesignDir/log
 set WNS [ get_property SLACK [get_timing_paths -max_paths 1 -nworst 1 -setup] ]
 set best_WNS $WNS
 set iteration 0
