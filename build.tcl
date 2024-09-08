@@ -128,19 +128,33 @@ opt_design {*}$OPT_ARGS > $optDesignDir/log
 puts "Step 4/5: Place design"
 set_clock_uncertainty 0.700 [get_clocks CLKSYS_main_clock_gen]
 place_design -directive ExtraNetDelay_high > $placeDesignDir/log
-set WNS -1
+set WNS [ get_property SLACK [get_timing_paths -max_paths 1 -nworst 1 -setup] ]
+set best_WNS $WNS
 set iteration 0
-while { $WNS < 0} {
+set maxIterations 5
+while { $WNS < 0 && $iteration < $maxIterations} {
+    puts "Iteration [expr $iteration + 1] / $maxIterations"
     run_phys_opt $placeDesignDir place_design 0
     set WNS [ get_property SLACK [get_timing_paths -max_paths 1 -nworst 1 -setup] ]
     report_timing_summary -file $placeDesignDir/timing_summary_$iteration.rpt -delay_type max -max_paths 50 -quiet
+    if { $WNS > $best_WNS && $WNS < 0} {
+        set best_WNS $WNS
+        write_checkpoint -force $placeDesignDir/best_place_design.dcp > /dev/null
+        puts "New best WNS: $WNS, checkpoint saved."
+    }
     incr iteration
-    if {$WNS < 0} {
+    if {$WNS < 0 && $iteration < $maxIterations} {
         puts "WNS below zero, rerunning place_design with post_place_opt.."
         place_design -post_place_opt >> $placeDesignDir/post_place_place_opt.log
     }
 }
 set_clock_uncertainty 0 [get_clocks CLKSYS_main_clock_gen]
+
+if {$WNS < 0} {
+    puts "WNS remains below zero, using best checkpoint.."
+    read_checkpoint $placeDesignDir/best_place_design.dcp
+}
+
 
 # Route design
 puts "Step 5/5: Route design"
