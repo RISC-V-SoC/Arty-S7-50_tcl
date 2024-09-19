@@ -126,7 +126,7 @@ read_xdc ./Arty-S7-50.xdc
 # Synthesis
 puts "Step 2/5: Synthesis of our modules"
 set SYNTH_ARGS ""
-append SYNTH_ARGS " " -flatten_hierarchy " " full " "
+append SYNTH_ARGS " " -flatten_hierarchy " " none " "
 append SYNTH_ARGS " " -gated_clock_conversion " " off " "
 append SYNTH_ARGS " " -bufg " {" 12 "} "
 append SYNTH_ARGS " " -directive " " AlternateRoutability " "
