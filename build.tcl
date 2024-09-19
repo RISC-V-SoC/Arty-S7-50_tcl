@@ -171,6 +171,7 @@ set WNS [ get_property SLACK [get_timing_paths -max_paths 1 -nworst 1 -setup] ]
 set best_WNS $WNS
 set iteration 0
 set maxIterations 5
+report_timing_summary -file $placeDesignDir/timing_summary_initial.rpt -delay_type max -max_paths 50 -quiet
 while { $WNS < 0 && $iteration < $maxIterations} {
     puts "Iteration [expr $iteration + 1] / $maxIterations"
     run_phys_opt $placeDesignDir place_design 0
@@ -193,7 +194,8 @@ if {$WNS < 0} {
     puts "WNS remains below zero, using best checkpoint.."
     read_checkpoint $placeDesignDir/best_place_design.dcp
 }
-
+set WNS [ get_property SLACK [get_timing_paths -max_paths 1 -nworst 1 -setup] ]
+puts "Place design final WNS (excludes user uncertainty): $WNS"
 
 # Route design
 puts "Step 5/5: Route design"
