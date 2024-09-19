@@ -7,7 +7,7 @@ proc run_phys_opt {output_dir design_stage_name dont_repeat} {
                             ExploreWithAggressiveHoldFix"
     set WNS [ get_property SLACK [get_timing_paths -max_paths 1 -nworst 1 -setup] ]
     set prevWNS -1000
-    while { $WNS != $prevWNS && $WNS < 0} {
+    while { $WNS > $prevWNS && $WNS < 0} {
         puts "phys_opt $design_stage_name current WNS: $WNS"
         set prevWNS $WNS
         foreach directive $phys_opt_directives {
