@@ -181,8 +181,6 @@ report_utilization -file $finalDesignDir/utilization.rpt -quiet
 report_power -file $finalDesignDir/power.rpt -quiet
 report_drc -file $finalDesignDir/drc.rpt -quiet
 
-#write_iphys_opt_tcl -place iphysopt.tcl
-
 set_property BITSTREAM.GENERAL.COMPRESS TRUE [current_design]
 set_property BITSTREAM.CONFIG.CONFIGRATE 33 [current_design]
 set_property config_mode SPIx4 [current_design]
