@@ -188,12 +188,13 @@ while { $WNS < 0 && $iteration < $maxIterations} {
         place_design -post_place_opt >> $placeDesignDir/post_place_place_opt.log
     }
 }
-set_clock_uncertainty 0 [get_clocks CLKSYS_main_clock_gen]
 
 if {$WNS < 0} {
     puts "WNS remains below zero, using best checkpoint.."
     read_checkpoint $placeDesignDir/best_place_design.dcp
+    link_design > /dev/null
 }
+set_clock_uncertainty 0 [get_clocks CLKSYS_main_clock_gen]
 set WNS [ get_property SLACK [get_timing_paths -max_paths 1 -nworst 1 -setup] ]
 puts "Place design final WNS (excludes user uncertainty): $WNS"
 
