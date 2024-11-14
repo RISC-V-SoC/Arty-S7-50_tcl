@@ -104,7 +104,7 @@ set_property BOARD_PART digilentinc.com:arty-s7-50:part0:1.1 [current_project]
 set_property DEFAULT_LIB work [current_project]
 # generate the clock core
 puts "Step 1/5: Creation and synthesis of clock gen module"
-generate_clk_125_mhz $outputDir
+generate_clk_100_mhz $outputDir
 
 read_vhdl -vhdl2008 [ glob toplevel.vhd ]
 read_vhdl -vhdl2008 [ glob RISC-V-SoC/main_file.vhd ]
