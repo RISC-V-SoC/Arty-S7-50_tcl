@@ -112,7 +112,6 @@ read_vhdl -vhdl2008 [ glob RISC-V-SoC/common/*.vhd ]
 read_vhdl -vhdl2008 [ glob RISC-V-SoC/bus/*.vhd ]
 read_vhdl -vhdl2008 [ glob RISC-V-SoC/riscv32_processor/*.vhd ]
 read_vhdl -vhdl2008 [ glob RISC-V-SoC/riscv32_processor/icache/*.vhd ]
-read_vhdl -vhdl2008 [ glob RISC-V-SoC/riscv32_processor/dcache/*.vhd ]
 read_vhdl -vhdl2008 [ glob RISC-V-SoC/riscv32_processor/pipeline/*.vhd ]
 read_vhdl -vhdl2008 [ glob RISC-V-SoC/riscv32_processor/utils/*.vhd ]
 read_vhdl -vhdl2008 [ glob RISC-V-SoC/riscv32_processor/write_back_dcache/*.vhd ]
@@ -143,7 +142,7 @@ append SYNTH_ARGS " " -max_dsp " {" -1 "} "
 append SYNTH_ARGS " " -cascade_dsp " " auto " "
 set_msg_config -id {[Synth 8-327]} -new_severity ERROR
 set_msg_config -id {[Synth 8-614]} -new_severity ERROR
-set_msg_config -id {[Synth 8-7129]} -new_severity INFO
+set_msg_config -id {[Synth 8-7129]} -suppress
 set_msg_config -id {[Synth 8-7080]} -new_severity INFO
 set sysclk_freq_mhz [ get_property CONFIG.CLKOUT1_REQUESTED_OUT_FREQ [get_ips main_clock_gen] ]
 synth_design -top toplevel -generic clk_freq_mhz=$sysclk_freq_mhz {*}$SYNTH_ARGS > $synthesisDir/log
