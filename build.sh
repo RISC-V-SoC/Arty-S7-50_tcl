@@ -1,6 +1,6 @@
 #!/bin/bash
 THIS_DIR=$(dirname "$0")
-VIVADO_DIR="/opt/Xilinx/Vivado/2023.2"
+VIVADO_DIR="/opt/Xilinx/Vivado/2024.2"
 source ${VIVADO_DIR}/settings64.sh
 
 rm -rf ${THIS_DIR}/.Xil
