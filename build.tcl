@@ -99,7 +99,7 @@ file mkdir $finalDesignDir
 
 set_part xc7s50csga324-1
 set_property TARGET_LANGUAGE VHDL [current_project]
-set_property BOARD_PART_REPO_PATHS $home/.Xilinx/Vivado/2023.2/xhub/board_store/xilinx_board_store [current_project]
+set_property BOARD_PART_REPO_PATHS $home/.Xilinx/Vivado/2024.2/xhub/board_store/xilinx_board_store [current_project]
 set_property BOARD_PART digilentinc.com:arty-s7-50:part0:1.1 [current_project]
 set_property DEFAULT_LIB work [current_project]
 # generate the clock core
@@ -110,6 +110,7 @@ read_vhdl -vhdl2008 [ glob toplevel.vhd ]
 read_vhdl -vhdl2008 [ glob RISC-V-SoC/main_file.vhd ]
 read_vhdl -vhdl2008 [ glob RISC-V-SoC/common/*.vhd ]
 read_vhdl -vhdl2008 [ glob RISC-V-SoC/bus/*.vhd ]
+read_vhdl -vhdl2008 [ glob RISC-V-SoC/bus/bus_cache/*.vhd ]
 read_vhdl -vhdl2008 [ glob RISC-V-SoC/riscv32_processor/*.vhd ]
 read_vhdl -vhdl2008 [ glob RISC-V-SoC/riscv32_processor/icache/*.vhd ]
 read_vhdl -vhdl2008 [ glob RISC-V-SoC/riscv32_processor/pipeline/*.vhd ]
