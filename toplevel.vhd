@@ -49,7 +49,12 @@ begin
     main_file : entity work.main_file
     generic map (
         clk_freq_hz => integer(clk_frequency_hz),
-        baud_rate => 2000000
+        baud_rate => 2000000,
+        icache_word_count_log2b => 9,
+        dcache_word_count_log2b => 9,
+        l2cache_words_per_line_log2b => 3,
+        l2cache_total_line_count_log2b => 11,
+        l2cache_bank_count_log2b => 3
     ) port map (
         JA_gpio => ja(7 downto 4),
         JB_gpio => jb(7 downto 4),
