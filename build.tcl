@@ -1,79 +1,57 @@
-proc run_phys_opt {output_dir design_stage_name dont_repeat} {
+proc run_phys_opt_routing {output_dir} {
     set phys_opt_directives "AddRetime \
                             AggressiveExplore \
                             AggressiveFanoutOpt \
                             AlternateReplication \
-                            AlternateFlowWithRetiming \
-                            ExploreWithAggressiveHoldFix"
+                            AlternateFlowWithRetiming"
+    set WNS [ get_property SLACK [get_timing_paths -max_paths 1 -nworst 1 -setup] ]
+    puts "phys_opt route_design current WNS: $WNS"
+    foreach directive $phys_opt_directives {
+        phys_opt_design -directive $directive >> $output_dir/physOpt.log
+    }
+    set WHS [ get_property SLACK [get_timing_paths -max_paths 1 -nworst 1 -hold] ]
+    if { $WHS < 0 } {
+        puts "phys_opt route_design WHS: $WHS, running HoldFix"
+        phys_opt_design -directive ExploreWithAggressiveHoldFix >> $output_dir/physOpt.log
+    }
+    set WNS [ get_property SLACK [get_timing_paths -max_paths 1 -nworst 1 -setup] ]
+    puts "phys_opt route_design final WNS: $WNS"
+    set WHS [ get_property SLACK [get_timing_paths -max_paths 1 -nworst 1 -hold] ]
+    puts "phys_opt route_design final WHS: $WHS"
+}
+
+proc run_phys_opt_placement {output_dir} {
+    set phys_opt_directives "AddRetime \
+                            AggressiveExplore \
+                            AggressiveFanoutOpt \
+                            AlternateReplication \
+                            AlternateFlowWithRetiming"
     set WNS [ get_property SLACK [get_timing_paths -max_paths 1 -nworst 1 -setup] ]
     set prevWNS -1000
     while { $WNS > $prevWNS && $WNS < 0} {
-        puts "phys_opt $design_stage_name current WNS: $WNS"
+        puts "phys_opt place_design current WNS: $WNS"
         set prevWNS $WNS
         foreach directive $phys_opt_directives {
             phys_opt_design -directive $directive >> $output_dir/physOpt.log
         }
         set WNS [ get_property SLACK [get_timing_paths -max_paths 1 -nworst 1 -setup] ]
-        if {$dont_repeat} {
-            break
-        }
     }
-    puts "phys_opt $design_stage_name final WNS: $WNS"
+    puts "phys_opt place_design final WNS: $WNS"
 }
 
-proc generate_clk_100_mhz {outputDir} {
+proc generate_clk {outputDir requestedFreqMhz} {
     create_ip -name clk_wiz -vendor xilinx.com -library ip -version 6.0 -module_name main_clock_gen -dir $outputDir -force
     set_property -dict [list \
         CONFIG.CLKIN1_JITTER_PS {833.33} \
         CONFIG.CLKOUT1_DRIVES {BUFGCE} \
-        CONFIG.CLKOUT1_JITTER {479.872} \
-        CONFIG.CLKOUT1_PHASE_ERROR {668.310} \
-        CONFIG.CLKOUT1_REQUESTED_OUT_FREQ {100} \
-        CONFIG.CLKOUT2_DRIVES {BUFGCE} \
-        CONFIG.CLKOUT3_DRIVES {BUFGCE} \
-        CONFIG.CLKOUT4_DRIVES {BUFGCE} \
-        CONFIG.CLKOUT5_DRIVES {BUFGCE} \
-        CONFIG.CLKOUT6_DRIVES {BUFGCE} \
-        CONFIG.CLKOUT7_DRIVES {BUFGCE} \
+        CONFIG.CLKOUT1_REQUESTED_OUT_FREQ $requestedFreqMhz \
         CONFIG.CLK_OUT1_PORT {CLKSYS} \
         CONFIG.FEEDBACK_SOURCE {FDBK_AUTO} \
-        CONFIG.MMCM_CLKFBOUT_MULT_F {62.500} \
         CONFIG.MMCM_CLKIN1_PERIOD {83.333} \
-        CONFIG.MMCM_CLKIN2_PERIOD {10.0} \
-        CONFIG.MMCM_CLKOUT0_DIVIDE_F {7.500} \
         CONFIG.PRIMARY_PORT {CLK12MHZ} \
         CONFIG.PRIM_IN_FREQ {12} \
         CONFIG.PRIM_SOURCE {No_buffer} \
-        CONFIG.USE_SAFE_CLOCK_STARTUP {true} \
-    ] [get_ips main_clock_gen]
-    generate_target all [get_files $outputDir/main_clock_gen/main_clock_gen.xci] > $outputDir/main_clock_gen/gen.log
-    synth_ip [get_files $outputDir/main_clock_gen/main_clock_gen.xci] > $outputDir/main_clock_gen/synth.log
-}
-
-proc generate_clk_125_mhz {outputDir} {
-    create_ip -name clk_wiz -vendor xilinx.com -library ip -version 6.0 -module_name main_clock_gen -dir $outputDir -force
-    set_property -dict [list \
-      CONFIG.CLKIN1_JITTER_PS {833.33} \
-      CONFIG.CLKOUT1_DRIVES {BUFGCE} \
-      CONFIG.CLKOUT1_JITTER {467.172} \
-      CONFIG.CLKOUT1_PHASE_ERROR {668.310} \
-      CONFIG.CLKOUT1_REQUESTED_OUT_FREQ {125} \
-      CONFIG.CLKOUT2_DRIVES {BUFGCE} \
-      CONFIG.CLKOUT3_DRIVES {BUFGCE} \
-      CONFIG.CLKOUT4_DRIVES {BUFGCE} \
-      CONFIG.CLKOUT5_DRIVES {BUFGCE} \
-      CONFIG.CLKOUT6_DRIVES {BUFGCE} \
-      CONFIG.CLKOUT7_DRIVES {BUFGCE} \
-      CONFIG.CLK_OUT1_PORT {CLKSYS} \
-      CONFIG.FEEDBACK_SOURCE {FDBK_AUTO} \
-      CONFIG.MMCM_CLKFBOUT_MULT_F {62.500} \
-      CONFIG.MMCM_CLKIN1_PERIOD {83.333} \
-      CONFIG.MMCM_CLKIN2_PERIOD {10.0} \
-      CONFIG.MMCM_CLKOUT0_DIVIDE_F {6.000} \
-      CONFIG.PRIMARY_PORT {CLK12MHZ} \
-      CONFIG.PRIM_IN_FREQ {12} \
-      CONFIG.PRIM_SOURCE {No_buffer} \
-      CONFIG.USE_SAFE_CLOCK_STARTUP {true} \
+        CONFIG.USE_SAFE_CLOCK_STARTUP {true}
     ] [get_ips main_clock_gen]
     generate_target all [get_files $outputDir/main_clock_gen/main_clock_gen.xci] > $outputDir/main_clock_gen/gen.log
     synth_ip [get_files $outputDir/main_clock_gen/main_clock_gen.xci] > $outputDir/main_clock_gen/synth.log
@@ -104,7 +82,7 @@ set_property BOARD_PART digilentinc.com:arty-s7-50:part0:1.1 [current_project]
 set_property DEFAULT_LIB work [current_project]
 # generate the clock core
 puts "Step 1/5: Creation and synthesis of clock gen module"
-generate_clk_100_mhz $outputDir
+generate_clk $outputDir 100
 
 read_vhdl -vhdl2008 [ glob toplevel.vhd ]
 read_vhdl -vhdl2008 [ glob RISC-V-SoC/main_file.vhd ]
@@ -124,6 +102,9 @@ read_vhdl -vhdl2008 [ glob RISC-V-SoC/spi_master_device/*.vhd ]
 read_vhdl -vhdl2008 [ glob RISC-V-SoC/static_soc_info/*.vhd ]
 read_vhdl -vhdl2008 [ glob RISC-V-SoC/gpio_controller/*.vhd ]
 read_xdc ./Arty-S7-50.xdc
+
+set sysclk_freq_mhz [ get_property CONFIG.CLKOUT1_REQUESTED_OUT_FREQ [get_ips main_clock_gen] ]
+puts "System clock frequency: $sysclk_freq_mhz MHz"
 
 # Synthesis
 puts "Step 2/5: Synthesis of our modules"
@@ -145,7 +126,6 @@ set_msg_config -id {[Synth 8-327]} -new_severity ERROR
 set_msg_config -id {[Synth 8-614]} -new_severity ERROR
 set_msg_config -id {[Synth 8-7129]} -suppress
 set_msg_config -id {[Synth 8-7080]} -new_severity INFO
-set sysclk_freq_mhz [ get_property CONFIG.CLKOUT1_REQUESTED_OUT_FREQ [get_ips main_clock_gen] ]
 synth_design -top toplevel -generic clk_freq_mhz=$sysclk_freq_mhz {*}$SYNTH_ARGS > $synthesisDir/log
 
 # Optimize design
@@ -167,22 +147,33 @@ opt_design {*}$OPT_ARGS > $optDesignDir/log
 
 #Place design
 puts "Step 4/5: Place design"
-set_clock_uncertainty 0.700 [get_clocks CLKSYS_main_clock_gen]
+set uncertainty [expr ((1000.0 / $sysclk_freq_mhz) * 0.1)]
+set uncertainty [format "%.3f" $uncertainty]
+puts "Clock uncertainty set to $uncertainty ns"
+set_clock_uncertainty $uncertainty [get_clocks CLKSYS_main_clock_gen]
 place_design -directive ExtraTimingOpt > $placeDesignDir/log
 set WNS [ get_property SLACK [get_timing_paths -max_paths 1 -nworst 1 -setup] ]
 set best_WNS $WNS
+set best_tns -10000
 set iteration 0
-set maxIterations 5
+set maxIterations 10
 report_timing_summary -file $placeDesignDir/timing_summary_initial.rpt -delay_type max -max_paths 50 -quiet
 while { $WNS < 0 && $iteration < $maxIterations} {
     puts "Iteration [expr $iteration + 1] / $maxIterations"
-    run_phys_opt $placeDesignDir place_design 0
+    run_phys_opt_placement $placeDesignDir
     set WNS [ get_property SLACK [get_timing_paths -max_paths 1 -nworst 1 -setup] ]
     report_timing_summary -file $placeDesignDir/timing_summary_$iteration.rpt -delay_type max -max_paths 50 -quiet
-    if { $WNS > $best_WNS && $WNS < 0} {
-        set best_WNS $WNS
-        write_checkpoint -force $placeDesignDir/best_place_design.dcp > /dev/null
-        puts "New best WNS: $WNS, checkpoint saved."
+    set tns 0.0
+    if { $WNS < 0 } {
+        foreach path [get_timing_paths -max_paths 10000 -slack_lesser_than 0] {
+            set slack [get_property SLACK $path]
+            set tns [expr {$tns + $slack}]
+        }
+        if { $tns > $best_tns } {
+            set best_tns $tns
+            write_checkpoint -force $placeDesignDir/best_place_design.dcp > /dev/null
+            puts [format "New best TNS: %.3f, checkpoint saved." $best_tns]
+        }
     }
     incr iteration
     if {$WNS < 0 && $iteration < $maxIterations} {
@@ -203,15 +194,22 @@ puts "Place design final WNS (excludes user uncertainty): $WNS"
 # Route design
 puts "Step 5/5: Route design"
 set WNS -1
+set WHS -1
 set iteration 0
-while { $WNS < 0} {
+while { $WNS < 0 || $WHS < 0} {
     route_design -directive MoreGlobalIterations -tns_cleanup >> $routeDesignDir/log
-    run_phys_opt $routeDesignDir route_design 1
     set WNS [ get_property SLACK [get_timing_paths -max_paths 1 -nworst 1 -setup] ]
+    set WHS [ get_property SLACK [get_timing_paths -max_paths 1 -nworst 1 -hold] ]
+    if {$WNS >= 0 && $WHS >= 0} {
+        break
+    }
+    run_phys_opt_routing $routeDesignDir
+    set WNS [ get_property SLACK [get_timing_paths -max_paths 1 -nworst 1 -setup] ]
+    set WHS [ get_property SLACK [get_timing_paths -max_paths 1 -nworst 1 -hold] ]
     report_timing_summary -file $routeDesignDir/timing_summary_$iteration.rpt -delay_type max -max_paths 50 -quiet
     incr iteration
-    if {$WNS < 0} {
-        puts "WNS below zero, rerunning place_design with post_place_opt.."
+    if {$WNS < 0 || $WHS < 0} {
+        puts "WNS or WHS below zero, rerunning place_design with post_place_opt.."
         place_design -post_place_opt >> $routeDesignDir/post_route_place_opt.log
     }
 }
