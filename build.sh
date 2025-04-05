@@ -13,7 +13,7 @@ if [ -f "$BUILDDIR/.hog" ]; then
     exit 1
 fi;
 
-rm -r ${BUILDDIR}/*
+rm -rf ${BUILDDIR}/*
 
 touch $BUILDDIR/.hog
 ${VIVADO_DIR}/bin/vivado -mode tcl -source build.tcl -nolog -nojournal -notrace -tclargs $BUILDDIR
