@@ -1,7 +1,8 @@
 #!/bin/bash
+
+source vivado.env
+
 THIS_DIR=$(dirname "$0")
-VIVADO_DIR="/opt/Xilinx/Vivado/2024.2"
-source ${VIVADO_DIR}/settings64.sh
 
 BUILDDIR=${1:-"build"}
 
