@@ -147,7 +147,7 @@ opt_design {*}$OPT_ARGS > $optDesignDir/log
 
 #Place design
 puts "Step 4/5: Place design"
-set uncertainty [expr ((1000.0 / $sysclk_freq_mhz) * 0.1)]
+set uncertainty [expr ((1000.0 / $sysclk_freq_mhz) * 0.06)]
 set uncertainty [format "%.3f" $uncertainty]
 puts "Clock uncertainty set to $uncertainty ns"
 set_clock_uncertainty $uncertainty [get_clocks CLKSYS_main_clock_gen]
