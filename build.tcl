@@ -101,6 +101,8 @@ read_vhdl -vhdl2008 [ glob RISC-V-SoC/uart_bus_slave/*.vhd ]
 read_vhdl -vhdl2008 [ glob RISC-V-SoC/spi_master_device/*.vhd ]
 read_vhdl -vhdl2008 [ glob RISC-V-SoC/static_soc_info/*.vhd ]
 read_vhdl -vhdl2008 [ glob RISC-V-SoC/gpio_controller/*.vhd ]
+read_vhdl -vhdl2008 [ glob RISC-V-SoC/timer_register/*.vhd ]
+read_vhdl -vhdl2008 [ glob RISC-V-SoC/platform_level_interrupt_controller/*.vhd ]
 read_xdc ./Arty-S7-50.xdc
 
 set sysclk_freq_mhz [ get_property CONFIG.CLKOUT1_REQUESTED_OUT_FREQ [get_ips main_clock_gen] ]
